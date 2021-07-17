@@ -1,17 +1,55 @@
 <template>
-  <AddCard />
+  <AddCard @newCustomer="addNewCard($event)" />
+  <ShowCards />
+
+  <br /><br />
+  <div class="container">
+    <p @click="clearLocalStorage">Снести все кхуям</p>
+  </div>
 </template>
 
 <script>
 import AddCard from "./components/AddCard.vue";
+import ShowCards from "./components/ShowCards.vue";
 
 export default {
   name: "App",
   components: {
     AddCard,
+    ShowCards,
   },
   data() {
-    return {};
+    return {
+      dataBase: [],
+    };
+  },
+  methods: {
+    getDataBase() {
+      console.log("Get db");
+      if (window.localStorage.getItem("discountsDatabase")) {
+        this.dataBase = JSON.parse(
+          window.localStorage.getItem("discountsDatabase")
+        );
+      }
+      console.log(this.dataBase);
+    },
+    setDataBase() {
+      window.localStorage.setItem(
+        "discountsDatabase",
+        JSON.stringify(this.dataBase)
+      );
+    },
+    addNewCard(customer) {
+      this.dataBase.push(customer);
+      this.setDataBase();
+    },
+    clearLocalStorage() {
+      this.dataBase = [];
+      this.setDataBase();
+    },
+  },
+  created() {
+    this.getDataBase();
   },
 };
 </script>

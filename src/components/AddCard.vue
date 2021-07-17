@@ -4,7 +4,7 @@
       Добавить карту
     </button>
   </div>
-  <div v-else class="container">
+  <div v-else class="container mb-5">
     <div class="row">
       <div class="col">
         <h4>Номер карты</h4>
@@ -23,7 +23,7 @@
     <div class="row">
       <div class="col">
         <button
-          @click="addNewCard"
+          @click="sendNewCard"
           type="button"
           class="btn btn-success"
           :disabled="isAddButtonDisabled()"
@@ -42,10 +42,6 @@
         </button>
       </div>
     </div>
-    <br /><br />
-    <div class="row">
-      <p @click="clearLocalStorage">Снести все кхуям</p>
-    </div>
   </div>
 </template>
 
@@ -56,7 +52,6 @@ export default {
   data() {
     return {
       buttonMode: true,
-      dataBase: [],
       cardId: "",
       phoneNumber: "",
       name: "",
@@ -67,10 +62,9 @@ export default {
     toggleView() {
       this.buttonMode = !this.buttonMode;
     },
-    addNewCard() {
+    sendNewCard() {
       let customer = this.createCustomer();
-      this.dataBase.push(customer);
-      this.setDataBase();
+      this.$emit("newCustomer", customer);
       this.clearInputs();
       this.toggleView();
     },
@@ -81,21 +75,7 @@ export default {
         name: this.name,
       };
     },
-    getDataBase() {
-      console.log("Get db");
-      if (window.localStorage.getItem("discountsDatabase")) {
-        this.dataBase = JSON.parse(
-          window.localStorage.getItem("discountsDatabase")
-        );
-      }
-      console.log(this.dataBase);
-    },
-    setDataBase() {
-      window.localStorage.setItem(
-        "discountsDatabase",
-        JSON.stringify(this.dataBase)
-      );
-    },
+
     clearInputs() {
       this.cardId = "";
       this.phoneNumber = "";
@@ -105,9 +85,7 @@ export default {
       this.clearInputs;
       this.toggleView();
     },
-    clearLocalStorage() {
-      (this.dataBase = []), this.setDataBase();
-    },
+
     isAddButtonDisabled() {
       if (this.cardId && this.phoneNumber && this.name) {
         return false;
@@ -116,9 +94,6 @@ export default {
     },
   },
   computed: {},
-  created() {
-    this.getDataBase();
-  },
 };
 </script>
 
