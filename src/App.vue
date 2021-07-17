@@ -10,7 +10,9 @@
   </div>
   <div class="container">
     <br /><br />
-    <p @click="clearLocalStorage">Удалить все внесенные в базу карты</p>
+    <p @click="clearLocalStorage" class="pointer">
+      Удалить все внесенные в базу карты
+    </p>
   </div>
 </template>
 
@@ -100,6 +102,10 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+.pointer {
+  cursor: pointer;
 }
 
 @import "~bootstrap/dist/css/bootstrap.css";

@@ -1,5 +1,5 @@
 <template>
-  <div class="container mt-3">
+  <div v-if="areCards" class="container mt-3">
     <div class="row">
       <table class="table">
         <thead>
@@ -30,6 +30,9 @@
       </table>
     </div>
   </div>
+  <div v-else class="container mt-5">
+    <p>Карты не найдены</p>
+  </div>
 </template>
 
 <script>
@@ -41,13 +44,24 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      areCards: false,
+    };
   },
   methods: {
     deleteCustomer(id) {
       console.log(id);
       this.$emit("deleteCustomer", id);
     },
+    checkCards() {
+      this.customers.length ? (this.areCards = true) : (this.areCards = false);
+    },
+  },
+  mounted() {
+    this.checkCards();
+  },
+  updated() {
+    this.checkCards();
   },
 };
 </script>
