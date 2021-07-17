@@ -1,10 +1,16 @@
 <template>
-  <AddCard @newCustomer="addNewCard($event)" />
-  <ShowCards />
-
-  <br /><br />
+  <AddCard @newCustomer="addNewCustomer($event)" />
+  <div class="container mt-3">
+    <h3>Введите номер телефона, карты или имя для поиска</h3>
+    <input type="text" placeholder="Жду..." v-model="search" />
+    <ShowCards
+      :customers="customers"
+      @deleteCustomer="deleteCustomer($event)"
+    />
+  </div>
   <div class="container">
-    <p @click="clearLocalStorage">Снести все кхуям</p>
+    <br /><br />
+    <p @click="clearLocalStorage">Удалить все внесенные в базу карты</p>
   </div>
 </template>
 
@@ -21,17 +27,17 @@ export default {
   data() {
     return {
       dataBase: [],
+      customers: [],
+      search: "",
     };
   },
   methods: {
     getDataBase() {
-      console.log("Get db");
       if (window.localStorage.getItem("discountsDatabase")) {
         this.dataBase = JSON.parse(
           window.localStorage.getItem("discountsDatabase")
         );
       }
-      console.log(this.dataBase);
     },
     setDataBase() {
       window.localStorage.setItem(
@@ -39,17 +45,49 @@ export default {
         JSON.stringify(this.dataBase)
       );
     },
-    addNewCard(customer) {
+    addNewCustomer(customer) {
       this.dataBase.push(customer);
       this.setDataBase();
+      this.createCustomersList();
+    },
+    deleteCustomer(id) {
+      for (let index in this.dataBase) {
+        if (this.dataBase[index].cardId == id) {
+          this.dataBase.splice(index, 1);
+        }
+      }
+      this.setDataBase();
+      this.createCustomersList();
+    },
+    createCustomersList() {
+      if (!this.search) {
+        this.customers = this.dataBase.slice();
+      } else {
+        this.customers = this.dataBase.filter((customer) => {
+          if (
+            customer.phoneNumber.indexOf(this.search) != -1 ||
+            customer.cardId.indexOf(this.search) != -1 ||
+            customer.name.indexOf(this.search) != -1
+          ) {
+            return customer;
+          }
+        });
+      }
     },
     clearLocalStorage() {
       this.dataBase = [];
       this.setDataBase();
+      this.createCustomersList();
     },
   },
   created() {
     this.getDataBase();
+    this.createCustomersList();
+  },
+  watch: {
+    search(val) {
+      this.createCustomersList();
+    },
   },
 };
 </script>

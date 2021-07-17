@@ -75,7 +75,6 @@ export default {
         name: this.name,
       };
     },
-
     clearInputs() {
       this.cardId = "";
       this.phoneNumber = "";
